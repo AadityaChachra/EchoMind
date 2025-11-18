@@ -48,57 +48,31 @@ aadityachachra-echomind/
 
 ## ⚡ Quick Start
 
-### 1️⃣ Clone the Repository
-
-```bash
+Clone the repo and run:
+```
 git clone https://github.com/AadityaChachra/EchoMind.git
-cd EchoMind
 ```
 
-### 2️⃣ Install Dependencies (using [uv](https://docs.astral.sh/uv/))
+# Setup UV if not already: 
 
-If you haven’t already:
-
-```bash
+```
 uv sync
 ```
+That’s it. This command:
 
-This command will:
+Creates a virtual environment (if needed)
+Installs all dependencies from uv.lock
+Sets up the full environment exactly as intended
 
-* Create a virtual environment (if not present)
-* Install all dependencies from `pyproject.toml`
-* Set up the environment exactly as intended
-
----
-
-## 🧠 Run the Application
-
-### Step 1: Start Backend (FastAPI)
-
-```bash
-cd backend
-uvicorn main:app --reload
+Run Dashboard.py (Frontend)
+```
+uv run streamlit run Dashboard.py
 ```
 
-Server will start at:
-
+Run backend/main.py (Backend)
 ```
-http://localhost:8000
+uv run backend/main.py
 ```
-
-### Step 2: Start Frontend (Streamlit)
-
-```bash
-streamlit run frontend.py
-```
-
-Now visit:
-
-```
-http://localhost:8501
-```
-
----
 
 ## 🔐 Environment Variables
 
@@ -160,32 +134,4 @@ The AI agent:
 <br></br>
 <img width="1188" height="384" alt="image" src="https://github.com/user-attachments/assets/80970644-468d-4317-9cfd-b4b308035b8d" />
 <br></br>
-
-<h2>🚀 Quick Start</h2>
-
-Clone the repo and run:
-```
-git clone https://github.com/AadityaChachra/EchoMind.git
-```
-
-# Setup UV if not already: 
-
-```
-uv sync
-```
-That’s it. This command:
-
-Creates a virtual environment (if needed)
-Installs all dependencies from uv.lock
-Sets up the full environment exactly as intended
-
-Run Dashboard.py (Frontend)
-```
-uv run streamlit run Dashboard.py
-```
-
-Run backend/main.py (Backend)
-```
-uv run backend/main.py
-```
 
