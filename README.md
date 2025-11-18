@@ -5,7 +5,7 @@
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 * 🗣️ **Conversational AI Therapist** — Uses the MedGemma model to provide human-like, empathetic responses.
 * 🚨 **Crisis Detection & Emergency Calls** — Automatically calls helplines using Twilio if user shows self-harm intent.
