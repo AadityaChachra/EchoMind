@@ -13,3 +13,8 @@ wheels/
 
 # Configuration files
 /backend/config.py
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3

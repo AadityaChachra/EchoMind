@@ -18,9 +18,19 @@ git clone https://github.com/AadityaChachra/EchoMind.git
 ```
 uv sync
 ```
-
 That’s it. This command:
 
 Creates a virtual environment (if needed)
 Installs all dependencies from uv.lock
 Sets up the full environment exactly as intended
+
+Run Dashboard.py (Frontend)
+```
+uv run streamlit run Dashboard.py
+```
+
+Run backend/main.py (Backend)
+```
+uv run backend/main.py
+```
+
