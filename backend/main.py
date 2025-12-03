@@ -1,13 +1,16 @@
 # Step1: Setup FastAPI backend
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from datetime import datetime
 from typing import List, Optional
 import uvicorn
+import io
+import wave
 
 from ai_agent import graph, SYSTEM_PROMPT, parse_response
 from database import init_db, get_db, ChatConversation
+from audio_emotion import analyze_emotion_from_wav_bytes
 
 app = FastAPI()
 
@@ -175,6 +178,112 @@ Please provide a detailed, empathetic summary that helps understand the user's m
         print(f"Error in summarize endpoint: {error_details}")
         # Return 200 with error message instead of raising exception
         return {"summary": f"Error processing request: {str(e)}. Please check the backend logs for details."}
+
+
+@app.post("/analyze_audio")
+async def analyze_audio(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    """
+    Analyze emotions from a recorded audio clip using a pretrained SER model.
+
+    Expects a WAV file upload from the frontend.
+    """
+    try:
+        if file.content_type not in ("audio/wav", "audio/x-wav", "audio/wave"):
+            raise HTTPException(status_code=400, detail="Only WAV audio is supported for now.")
+
+        audio_bytes = await file.read()
+
+        # Basic validation: ensure it's a readable WAV
+        try:
+            with wave.open(io.BytesIO(audio_bytes), "rb") as wf:
+                n_frames = wf.getnframes()
+                framerate = wf.getframerate()
+                duration_sec = n_frames / float(framerate) if framerate else 0.0
+        except Exception:
+            raise HTTPException(status_code=400, detail="Invalid WAV file.")
+
+        # Run emotion classifier. top_k=None -> return all emotion labels from the model.
+        preds = analyze_emotion_from_wav_bytes(audio_bytes, top_k=None)
+
+        # Build a human-readable summary from raw model output
+        if preds:
+            top_labels = ", ".join([f"{p['label']} ({p['score']:.2f})" for p in preds])
+            primary = preds[0]["label"]
+        else:
+            top_labels = "No emotions detected."
+            primary = "unknown"
+
+        base_analysis = (
+            f"Primary detected emotion in your voice: {primary}. "
+            f"Full emotion distribution: {top_labels}."
+        )
+
+        # Ask the LLM to generate a short, 2-line supportive summary
+        llm_prompt = (
+            "You are a compassionate mental health assistant. "
+            "Given the following acoustic emotion analysis of a user's voice, "
+            "write a friendly, empathetic TWO-LINE summary (no more than 2 sentences total). "
+            "Use plain language, no bullet points, no markdown formatting.\n\n"
+            f"Analysis details: {base_analysis}\n\n"
+            "Now respond with only the two-line summary:"
+        )
+
+        try:
+            inputs = {"messages": [("system", SYSTEM_PROMPT), ("user", llm_prompt)]}
+            stream = graph.stream(inputs, stream_mode="updates")
+            _, llm_summary = parse_response(stream)
+        except Exception:
+            llm_summary = (
+                "I can hear that this moment carries some emotional weight for you. "
+                "Thank you for sharing your voice—it's okay to feel what you're feeling."
+            )
+
+        # Persist this analysis in the same conversations table so it appears in History
+        try:
+            record_text = (
+                f"[Voice emotion analysis]\n"
+                f"Primary emotion: {primary}.\n"
+                f"All detected emotions: {top_labels}.\n"
+                f"Summary: {llm_summary}"
+            )
+            chat_record = ChatConversation(
+                user_message="[Voice note]",
+                assistant_response=record_text,
+                tool_called="speech_emotion",
+                timestamp=datetime.utcnow(),
+            )
+            db.add(chat_record)
+            db.commit()
+        except Exception:
+            # Don't break the API if saving fails
+            db.rollback()
+
+        analysis = (
+            f"Primary detected emotion in your voice: {primary}. "
+            f"All detected emotions and scores: {top_labels}."
+        )
+
+        return {
+            "primary_emotion": primary,
+            "emotions": preds,
+            "duration_seconds": round(duration_sec, 1),
+            "analysis": analysis,
+            "gpt_summary": llm_summary,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        # Log and return a safe message
+        return {
+            "primary_emotion": "unknown",
+            "emotions": [],
+            "duration_seconds": 0.0,
+            "analysis": f"Error analyzing audio: {str(e)}",
+        }
 
 
 if __name__ == "__main__":

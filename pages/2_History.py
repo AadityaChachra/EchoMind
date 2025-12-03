@@ -153,7 +153,10 @@ else:
             with col1:
                 st.markdown(f"**🕐 Time:** {formatted_time}")
                 if chat.get("tool_called"):
-                    st.markdown(f"**🔧 Tool Used:** `{chat['tool_called']}`")
+                    if chat["tool_called"] == "speech_emotion":
+                        st.markdown("**🔧 Tool Used:** `speech_emotion`  (🎧 Speech Emotion Analysis)")
+                    else:
+                        st.markdown(f"**🔧 Tool Used:** `{chat['tool_called']}`")
             
             with col2:
                 st.caption(f"ID: {chat['id']}")
