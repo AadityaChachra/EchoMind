@@ -1,7 +1,7 @@
 """
 Database setup and models for storing chat conversations.
 """
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text, Float, JSON
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
@@ -22,7 +22,7 @@ Base = declarative_base()
 
 class ChatConversation(Base):
     """
-    Model for storing chat conversations with timestamps.
+    Model for storing chat conversations with timestamps and analytics.
     """
     __tablename__ = "chat_conversations"
 
@@ -30,7 +30,12 @@ class ChatConversation(Base):
     user_message = Column(Text, nullable=False)
     assistant_response = Column(Text, nullable=False)
     tool_called = Column(String(100), nullable=True)
-    timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+    
+    # Analytics fields
+    sentiment_score = Column(Float, nullable=True)  # -1 to 1 (negative to positive)
+    conversation_length = Column(Integer, nullable=True)  # Total character count
+    emotion_data = Column(JSON, nullable=True)  # For speech/facial emotion entries
 
     def __repr__(self):
         return f"<ChatConversation(id={self.id}, timestamp={self.timestamp})>"

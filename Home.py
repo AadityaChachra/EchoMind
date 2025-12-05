@@ -233,10 +233,10 @@ col1, col2, col3, col4, col5 = st.columns([1, 1, 2, 1, 1])
 with col3:
     col_left, col_right = st.columns(2)
     with col_left:
-        if st.button("💬 Start Chatting", use_container_width=True, type="primary"):
+        if st.button("💬 Start Chatting", width='stretch', type="primary"):
             st.switch_page("pages/1_Chat.py")
     with col_right:
-        if st.button("📜 View History", use_container_width=True):
+        if st.button("📜 View History", width='stretch'):
             st.switch_page("pages/2_History.py")
 
 # Additional Information

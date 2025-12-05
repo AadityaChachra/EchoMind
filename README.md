@@ -64,9 +64,9 @@ Creates a virtual environment (if needed)
 Installs all dependencies from uv.lock
 Sets up the full environment exactly as intended
 
-Run Dashboard.py (Frontend)
+Run Home.py (Frontend)
 ```
-uv run streamlit run Dashboard.py
+uv run streamlit run Home.py
 ```
 
 Run backend/main.py (Backend)

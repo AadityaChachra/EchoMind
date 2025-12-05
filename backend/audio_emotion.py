@@ -61,7 +61,7 @@ def analyze_emotion_from_wav_bytes(wav_bytes: bytes, top_k: Optional[int] = None
             tmp_path.unlink()
         except OSError:
             pass
-
     return preds
+
 
 

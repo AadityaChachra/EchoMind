@@ -24,7 +24,7 @@ with col_rec:
 with col_info:
     if audio_bytes is not None:
         st.audio(audio_bytes, format="audio/wav")
-        if st.button("🔍 Analyze Voice Emotions", key="analyze_voice_btn", use_container_width=True):
+        if st.button("🔍 Analyze Voice Emotions", key="analyze_voice_btn", width='stretch'):
             with st.spinner("Analyzing your voice emotions..."):
                 try:
                     files = {"file": ("voice_recording.wav", audio_bytes, "audio/wav")}
