@@ -14,259 +14,364 @@ st.set_page_config(
     }
 )
 
-# Custom CSS for beautiful landing page and sidebar customization
+# Modern Dark Theme CSS
 st.markdown("""
 <style>
-    /* Set light background for main content area */
+    /* Dark theme base */
+    .stApp {
+        background: #0a0e27;
+    }
+    
     .main .block-container {
-        background-color: #ffffff;
-        padding: 2rem;
+        background: #0a0e27;
+        padding: 2rem 1rem;
+        max-width: 1200px;
     }
     
-    /* Ensure all text is readable */
-    .main h1, .main h2, .main h3, .main p, .main div {
-        color: #1f1f1f !important;
-    }
+    /* Hide default Streamlit elements */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
     
-    /* Landing page styles */
-    .main-header {
+    /* Hero Section */
+    .hero-container {
         text-align: center;
-        padding: 3rem 2rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: #ffffff !important;
-        border-radius: 20px;
-        margin-bottom: 3rem;
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        padding: 4rem 2rem;
+        margin-bottom: 4rem;
     }
     
-    .main-header h1 {
-        font-size: 3.5rem;
-        margin-bottom: 1rem;
+    .hero-title {
+        font-size: 4rem;
         font-weight: 700;
-        color: #ffffff !important;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+        letter-spacing: -0.02em;
     }
     
-    .main-header p {
-        font-size: 1.3rem;
-        color: #ffffff !important;
-        opacity: 0.95;
-    }
-    
-    .feature-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        height: 100%;
-        border: 1px solid #e0e0e0;
-    }
-    
-    .feature-card h3 {
-        color: #667eea !important;
-        font-weight: 600;
-        margin-top: 1rem;
+    .hero-subtitle {
+        font-size: 1.5rem;
+        color: #ffffff;
+        font-weight: 300;
         margin-bottom: 0.5rem;
     }
     
-    .feature-card p {
-        color: #333333 !important;
+    .hero-description {
+        font-size: 1.1rem;
+        color: #e2e8f0;
+        max-width: 600px;
+        margin: 0 auto;
         line-height: 1.6;
     }
     
+    /* Feature Cards */
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin: 3rem 0;
+    }
+    
+    .feature-card {
+        background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+        border: 1px solid rgba(102, 126, 234, 0.2);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+    
     .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+        transform: translateY(-8px);
+        border-color: rgba(102, 126, 234, 0.5);
+        box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+    }
+    
+    .feature-card:hover::before {
+        transform: scaleX(1);
     }
     
     .feature-icon {
         font-size: 3rem;
         margin-bottom: 1rem;
+        display: block;
     }
     
-    .cta-button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 1rem 2.5rem;
-        border-radius: 50px;
-        font-size: 1.2rem;
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #e2e8f0;
+        margin-bottom: 0.75rem;
+    }
+    
+    .feature-description {
+        font-size: 0.95rem;
+        color: #ffffff;
+        line-height: 1.6;
+        margin: 0;
+    }
+    
+    /* Quick Actions */
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 3rem 0;
+    }
+    
+    .action-btn {
+        padding: 0.875rem 2rem;
+        border-radius: 12px;
+        font-size: 1rem;
         font-weight: 600;
         border: none;
         cursor: pointer;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         text-decoration: none;
         display: inline-block;
     }
     
-    .cta-button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    
+    .action-btn-secondary {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        border: 1px solid rgba(102, 126, 234, 0.3);
     }
     
-    .stats-container {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        padding: 2rem;
-        border-radius: 15px;
+    .action-btn-secondary:hover {
+        background: rgba(102, 126, 234, 0.2);
+        transform: translateY(-2px);
+    }
+    
+    /* Stats Section */
+    .stats-section {
+        background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+        border: 1px solid rgba(102, 126, 234, 0.2);
+        border-radius: 20px;
+        padding: 3rem 2rem;
+        margin: 3rem 0;
         text-align: center;
     }
     
-    .stats-container h3 {
-        color: #667eea !important;
+    .stats-title {
+        font-size: 2rem;
         font-weight: 600;
-        margin-bottom: 1rem;
+        color: #e2e8f0;
+        margin-bottom: 2rem;
     }
     
-    .stats-container p {
-        color: #333333 !important;
-        line-height: 1.6;
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
     }
     
-    .hero-section {
+    .stat-item {
+        padding: 1.5rem;
+    }
+    
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: #ffffff;
+        margin-top: 0.5rem;
+    }
+    
+    /* Footer */
+    .footer {
         text-align: center;
-        padding: 4rem 2rem;
+        padding: 3rem 2rem;
+        color: #e2e8f0;
+        font-size: 0.9rem;
     }
     
-    .hero-section h2 {
-        color: #667eea !important;
-        font-weight: 600;
+    /* Text colors for Streamlit */
+    h1, h2, h3, h4, h5, h6 {
+        color: #e2e8f0 !important;
     }
     
-    .hero-section p {
-        color: #333333 !important;
-        line-height: 1.8;
+    p, div, span {
+        color: #e2e8f0 !important;
     }
     
-    /* Sidebar background */
-    [data-testid="stSidebar"] {
-        background: #1e1e2f !important;
-    }
-
-    /* Sidebar content area */
-    [data-testid="stSidebar"] .css-1d391kg {
-        background-color: #1e1e2f !important;
-    }
-
-    /* Sidebar customization */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+    /* Divider */
+    .divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+        margin: 3rem 0;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # Hero Section
 st.markdown("""
-<div class="main-header">
-    <h1>🧠 EchoMind</h1>
-    <p>Mental Health Monitoring and Support System</p>
-    <p style="font-size: 1rem; margin-top: 1rem;">Empathetic support, available 24/7</p>
+<div class="hero-container">
+    <div class="hero-title">🧠 EchoMind</div>
+    <div class="hero-subtitle">Mental Health Monitoring and Support System</div>
+    <div class="hero-description">
+        Intelligent support, emotion analysis, and compassionate guidance—all in one place. 
+        Track your mental health journey with cutting-edge AI technology.
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
-# Main Content
-st.markdown("""
-<div class="hero-section">
-    <h2 style="color: #667eea !important; margin-bottom: 1rem; font-weight: 600;">Welcome to EchoMind</h2>
-    <p style="font-size: 1.2rem; color: #333333 !important; max-width: 800px; margin: 0 auto 3rem; line-height: 1.8;">
-        EchoMind is an intelligent mental health support system that provides compassionate, 
-        evidence-based guidance whenever you need it. Our AI-powered chatbot is here to listen, 
-        understand, and support you on your mental health journey.
-    </p>
-</div>
-""", unsafe_allow_html=True)
-
-# Features Section
-st.markdown("### ✨ Key Features", help="Explore the powerful features of EchoMind")
-
-col1, col2, col3 = st.columns(3)
+# Quick Action Buttons
+col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
 
 with col1:
-    st.markdown("""
-    <div class="feature-card">
-        <div class="feature-icon">💬</div>
-        <h3 style="color: #667eea !important; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem;">AI Chat Support</h3>
-        <p style="color: #333333 !important; line-height: 1.6;">Engage in meaningful conversations with our AI-powered mental health specialist. 
-        Get empathetic, evidence-based responses to your concerns.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    if st.button("💬 Chat", width='stretch', use_container_width=True):
+        st.switch_page("pages/1_Chat.py")
 
 with col2:
-    st.markdown("""
-    <div class="feature-card">
-        <div class="feature-icon">🔧</div>
-        <h3 style="color: #667eea !important; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem;">Smart Tools</h3>
-        <p style="color: #333333 !important; line-height: 1.6;">Access emergency calling support, find nearby therapists, and get personalized mental 
-        health resources tailored to your needs.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    if st.button("🎤 Voice", width='stretch', use_container_width=True):
+        st.switch_page("pages/3_Voice.py")
 
 with col3:
-    st.markdown("""
-    <div class="feature-card">
-        <div class="feature-icon">📊</div>
-        <h3 style="color: #667eea !important; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem;">Progress Tracking</h3>
-        <p style="color: #333333 !important; line-height: 1.6;">View your conversation history, track your mental health journey, and analyze 
-        patterns over time with our comprehensive history feature.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    if st.button("😊 Face", width='stretch', use_container_width=True):
+        st.switch_page("pages/2_Face.py")
 
-st.markdown("<br>", unsafe_allow_html=True)
+with col4:
+    if st.button("📊 History", width='stretch', use_container_width=True):
+        st.switch_page("pages/4_History.py")
 
-# Call to Action Section
-st.markdown("---")
-col1, col2, col3 = st.columns([1, 2, 1])
+st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
 
-with col2:
-    st.markdown("""
-    <div style="text-align: center; padding: 2rem;">
-        <h2 style="color: #667eea !important; margin-bottom: 1.5rem; font-weight: 600;">Ready to Get Started?</h2>
-        <p style="font-size: 1.1rem; color: #333333 !important; margin-bottom: 2rem; line-height: 1.8;">
-            Click on <strong style="color: #667eea;">Chat</strong> in the sidebar to begin your conversation, 
-            or explore your <strong style="color: #667eea;">History</strong> to review past interactions.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+# Features Section
+st.markdown("""
+<div style="text-align: center; margin-bottom: 2rem;">
+    <h2 style="font-size: 2.5rem; font-weight: 600; color: #ffffff !important; margin-bottom: 0.5rem;">Features</h2>
+    <p style="color: #e2e8f0 !important; font-size: 1.1rem;">Comprehensive tools for your mental well-being</p>
+</div>
+""", unsafe_allow_html=True)
 
-# Navigation Buttons
-col1, col2, col3, col4, col5 = st.columns([1, 1, 2, 1, 1])
-
-with col3:
-    col_left, col_right = st.columns(2)
-    with col_left:
-        if st.button("💬 Start Chatting", width='stretch', type="primary"):
-            st.switch_page("pages/1_Chat.py")
-    with col_right:
-        if st.button("📜 View History", width='stretch'):
-            st.switch_page("pages/2_History.py")
-
-# Additional Information
-st.markdown("<br>", unsafe_allow_html=True)
-st.markdown("---")
-
+# Feature Cards
 col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("""
-    <div class="stats-container">
-        <h3 style="color: #667eea !important; font-weight: 600; margin-bottom: 1rem;">🔒 Privacy & Security</h3>
-        <p style="color: #333333 !important; line-height: 1.6;">Your conversations are stored securely and privately. 
-        All data is encrypted and accessible only to you.</p>
+    <div class="feature-card">
+        <span class="feature-icon">💬</span>
+        <div class="feature-title">AI Chat Support</div>
+        <div class="feature-description">
+            Engage in meaningful conversations with our AI-powered mental health specialist. 
+            Get empathetic, evidence-based responses powered by advanced language models.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class="feature-card">
+        <span class="feature-icon">😊</span>
+        <div class="feature-title">Facial Emotion Analysis</div>
+        <div class="feature-description">
+            Capture photos or videos to analyze facial expressions and emotions. 
+            Get insights into your emotional state with AI-powered facial recognition.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class="feature-card">
+        <span class="feature-icon">📊</span>
+        <div class="feature-title">Analytics & Reports</div>
+        <div class="feature-description">
+            Comprehensive analytics dashboard with sentiment trends, emotion tracking, 
+            weekly/monthly reports, and visual insights into your mental health journey.
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
 with col2:
     st.markdown("""
-    <div class="stats-container">
-        <h3 style="color: #667eea !important; font-weight: 600; margin-bottom: 1rem;">⚡ Always Available</h3>
-        <p style="color: #333333 !important; line-height: 1.6;">EchoMind is available 24/7, providing support whenever you need it.</p>
+    <div class="feature-card">
+        <span class="feature-icon">🎤</span>
+        <div class="feature-title">Voice Emotion Recognition</div>
+        <div class="feature-description">
+            Record your voice and analyze emotional tone through advanced speech emotion recognition. 
+            Get instant feedback on your vocal emotional patterns.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class="feature-card">
+        <span class="feature-icon">📜</span>
+        <div class="feature-title">History & Tracking</div>
+        <div class="feature-description">
+            View your complete conversation history with advanced filtering, sorting, 
+            and search capabilities. Track your progress over time.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class="feature-card">
+        <span class="feature-icon">🚨</span>
+        <div class="feature-title">Emergency Support</div>
+        <div class="feature-description">
+            Automatic crisis detection with emergency calling support and therapist finder. 
+            Get immediate help when you need it most.
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-# Footer
-st.markdown("<br><br>", unsafe_allow_html=True)
+st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
+
+# Stats/Info Section
 st.markdown("""
-<div style="text-align: center; padding: 2rem; color: #666666 !important;">
-    <p style="color: #666666 !important; font-size: 1rem;">💙 Built with care for your mental well-being</p>
-    <p style="font-size: 0.9rem; color: #666666 !important;">EchoMind - Mental Health Monitoring and Support System</p>
+<div class="stats-section">
+    <div class="stats-title">Why Choose EchoMind?</div>
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-icon">🔒</div>
+            <div style="font-size: 1.2rem; font-weight: 600; color: #e2e8f0;">Privacy First</div>
+            <div class="stat-label">Your data is encrypted and secure</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">⚡</div>
+            <div style="font-size: 1.2rem; font-weight: 600; color: #e2e8f0;">24/7 Available</div>
+            <div class="stat-label">Support whenever you need it</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">🤖</div>
+            <div style="font-size: 1.2rem; font-weight: 600; color: #e2e8f0;">AI-Powered</div>
+            <div class="stat-label">Advanced ML models for accurate analysis</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">📈</div>
+            <div style="font-size: 1.2rem; font-weight: 600; color: #e2e8f0;">Track Progress</div>
+            <div class="stat-label">Monitor your mental health journey</div>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# Footer
+st.markdown("""
+<div class="footer">
+    <p style="color: #ffffff !important; font-size: 1rem; margin-bottom: 0.5rem;">💙 Built with care for your mental well-being</p>
+    <p style="color: #e2e8f0 !important; font-size: 0.85rem;">EchoMind - Mental Health Monitoring and Support System</p>
 </div>
 """, unsafe_allow_html=True)

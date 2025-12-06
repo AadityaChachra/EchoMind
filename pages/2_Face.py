@@ -7,12 +7,12 @@ st.set_page_config(page_title="EchoMind - Facial Emotion", layout="wide")
 
 st.title("😊 EchoMind - Facial Emotion Analysis")
 st.markdown(
-    "Capture a photo or record a video of yourself, and let EchoMind analyze your facial emotions. "
+    "Upload a photo or video of yourself, and let EchoMind analyze your facial emotions. "
     "Results are approximate, based on facial expressions only, and **not** a diagnosis."
 )
 
 # Tabs for photo vs video
-tab_photo, tab_video = st.tabs(["📷 Capture Photo", "🎥 Record Video"])
+tab_photo, tab_video = st.tabs(["📷 Upload Photo", "🎥 Upload Video"])
 
 with tab_photo:
     st.markdown("### 📸 Upload or Capture a Photo")
@@ -105,27 +105,19 @@ with tab_photo:
                     st.error(f"Error analyzing image: {str(e)}")
 
 with tab_video:
-    st.markdown("### 🎥 Record or Upload a Video")
-    st.markdown("Record a short video or upload a video file. The middle frame will be analyzed.")
+    st.markdown("### 🎥 Upload a Video")
+    st.markdown("Upload a video file. The middle frame will be analyzed for facial emotions.")
     
-    col_record, col_upload_vid = st.columns(2)
+    uploaded_video = st.file_uploader(
+        "Choose a video file",
+        type=["mp4", "avi", "mov", "mkv"],
+        help="Upload a video containing your face. The middle frame will be analyzed.",
+        key="video_upload"
+    )
     
-    with col_record:
-        st.markdown("#### Record Video")
-        st.info("💡 Video recording is available via file upload. Use the upload option below.")
-    
-    with col_upload_vid:
-        st.markdown("#### Upload Video")
-        uploaded_video = st.file_uploader(
-            "Choose a video file",
-            type=["mp4", "avi", "mov", "mkv"],
-            help="Upload a video containing your face. The middle frame will be analyzed.",
-            key="video_upload"
-        )
-        
-        if uploaded_video is not None:
-            st.video(uploaded_video)
-            st.caption("The middle frame of this video will be analyzed for emotions.")
+    if uploaded_video is not None:
+        st.video(uploaded_video)
+        st.caption("The middle frame of this video will be analyzed for emotions.")
     
     # Analyze button for video
     if uploaded_video is not None:

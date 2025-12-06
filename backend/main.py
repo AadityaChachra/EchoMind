@@ -514,13 +514,17 @@ async def get_filtered_chats(
     elif sort_by == "oldest":
         query = query.order_by(ChatConversation.timestamp.asc())
     elif sort_by == "longest":
-        query = query.order_by(ChatConversation.conversation_length.desc().nulls_last())
+        # SQLite doesn't support .nulls_last(), use coalesce() with -1 so NULLs sort last
+        query = query.order_by(func.coalesce(ChatConversation.conversation_length, -1).desc())
     elif sort_by == "shortest":
-        query = query.order_by(ChatConversation.conversation_length.asc().nulls_last())
+        # SQLite doesn't support .nulls_last(), use coalesce() with large number so NULLs sort last
+        query = query.order_by(func.coalesce(ChatConversation.conversation_length, 999999999).asc())
     elif sort_by == "most_positive":
-        query = query.order_by(ChatConversation.sentiment_score.desc().nulls_last())
+        # SQLite doesn't support .nulls_last(), use coalesce() with -2 so NULLs sort last
+        query = query.order_by(func.coalesce(ChatConversation.sentiment_score, -2).desc())
     elif sort_by == "most_negative":
-        query = query.order_by(ChatConversation.sentiment_score.asc().nulls_last())
+        # SQLite doesn't support .nulls_last(), use coalesce() with 2 so NULLs sort last
+        query = query.order_by(func.coalesce(ChatConversation.sentiment_score, 2).asc())
     else:
         query = query.order_by(ChatConversation.timestamp.desc())
     

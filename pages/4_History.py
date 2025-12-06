@@ -10,7 +10,7 @@ from io import BytesIO
 BACKEND_URL = "http://localhost:8000"
 st.set_page_config(page_title="History", layout="wide")
 
-st.title("📜 Chat History & Analytics")
+st.title("📜 History & Analytics")
 st.markdown("View your conversations, track your mental health journey, and gain insights from your interactions with EchoMind")
 
 # Initialize session state
